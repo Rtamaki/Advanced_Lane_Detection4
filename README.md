@@ -2,8 +2,11 @@
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
 [//]: # (Image References)
+[undist1]: ./output_images/undist_calibration2.jpg
+[undist2]: ./output_images/undist_calibration3.jpg
+[undist3]: ./output_images/undist_calibration4.jpg
 
-[bin1]: .//binary_straight_lines1.jpg "Straight Lines Binary 1"
+[bin1]: ./binary_straight_lines1.jpg "Straight Lines Binary 1"
 [bin2]: ./binary_straight_lines2.jpg "Straight Lines Binary 2"
 [bin3]: ./binary_test1.jpg "Binary Test 1"
 [bin4]: ./binary_test2.jpg "Binary Test 2"
@@ -73,7 +76,10 @@ The steps to get the camera matrix are:
   3) With the function "cv2.findChessboardCorners" get the corners of the chessboard for each image. In this step it is critical to verify if the corners were found, otherwise we will feed the wrong values to the function "cv2.calibrateCamera". We do this by checking if the *ret* returned by "cv2.findChessboardCorners" is true.
   4) Feed the function "cv2.calibrateCamera" with the objective points and image points. Save the distortion coefficients, the camera matrix and the inverse camera matrix in a .txt file(or any other format) to use it afterwards without having to go through all this process again.
 
-Now we need to check the quality of the camera calibration with the chessboard images. We could do this with any image, but with the board images the distortion is much more obvious.
+Now we need to check the quality of the camera calibration with the chessboard images. We could do this with any image, but with the board images the distortion is much more obvious. Below are the undistorted images from the folder "camera_cal" "calibration2.jpg", "calibration3.jpg", and "calibration4.jpg".
+![][undist1]
+![][undist2]
+![][undist3]
 
 
 The Lane Detection Pipeline
