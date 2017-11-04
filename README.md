@@ -88,11 +88,11 @@ After we have properly found the camera matrix and distortion coefficients, we c
 
   1) Load the camera matrix and distortion coefficients
   2) Undistort the image (*image_processing.undistort_image()*)
-  3) Apply a combination of brightness, gradient direction, gradient value, hue thresholds to get a binary image in which the lane lines are as visible as possible(since some loss is acceptable, but they must yet be detectable) and everything else(or at least everything which are near the lane lines in the image), are black. (*image_processing.compound_thresh()*)
-    3.1) Transform the image from RGB to HLS color space. This color space is more easily interpretd by use since one dimension is only the "color"(hue), the second is the saturation and the last is the brightness value. So with this color space we already have all the interested dimensions for the algorithm.
-    3.2) Apply sobel through "cv2.Sobel" in each axis to get the gradient in each direction, then get the absolute values of the gradient and it's direction. Apply value restriction to both values.
-    3.3) Apply value resctricton  in the hue and satuaration dimensions.
-    3.4 Combine the the previous binary images through *or* and *and* logic the get the lane lines while excluding everything else as best as possible.
+  3) Apply a combination of brightness, gradient direction, gradient value, hue thresholds to get a binary image in which the lane lines are as visible as possible(since some loss is acceptable, but they must yet be detectable) and everything else(or at least everything which are near the lane lines in the image), are black. (*image_processing.compound_thresh()*). After more iterations and from help from Udacity, I implemented the lane detection only using the colors, by accepting either white or yellow and got much better accuracy. I left the first implentation for reference for anyone who may in the future improve from here.
+    3.1.1) Transform the image from RGB to HLS color space. This color space is more easily interpretd by use since one dimension is only the "color"(hue), the second is the saturation and the last is the brightness value. So with this color space we already have all the interested dimensions for the algorithm.
+    3.1.2) Apply sobel through "cv2.Sobel" in each axis to get the gradient in each direction, then get the absolute values of the gradient and it's direction. Apply value restriction to both values.
+    3.1.3) Apply value resctricton  in the hue and satuaration dimensions.
+    3.1.4 Combine the the previous binary images through *or* and *and* logic the get the lane lines while excluding everything else as best as possible.
     ![Straight Lines 1 Binary][bin1]
     ![Straight Lines 1 Binary][bin2]
     ![Binary Test 1][bin3]
@@ -101,8 +101,11 @@ After we have properly found the camera matrix and distortion coefficients, we c
     ![Binary Test 4][bin6]
     ![Binary Test 5][bin7]
     ![Binary Test 6][bin8]
-
-    
+   3.2.1) Transform the image from RGB to HSV color space
+   3.2.2) For one binary, select only the yellow points. In the HSV format, it is more or less between [15, 60, 60] and [30, 174, 250], depending on why kind of yellow you want. 
+   3.2.3) Using either RGB/BGR/HSV, select the white points in the image. This may have future problems if we try to implement to agorithm to work in the night.
+   3.3.4) Select all points that satisfy either conditions.
+   
   4) From the previous combined binary image, apply perspective transform. (*image_processing.do_perspective_transform()*)
     4.1) To get the correct transformation, we need to use the images *straight_lines1.jpg* and *straight_lines2.jpg* to get the 4 points in the lane which we know define a rectangular form. Afterwards, we need to specify which format these points if they were seen in bird eye view, and we pass the 2 pairs of 4 points to the function "cv2.getPerspectiveTranform" to get the matrix to warp the perspective. 
     4.2) In fact, it is bette to get the perspective transform matrix before, so the pipeline has 1 less step to go through for each image.
