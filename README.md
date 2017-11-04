@@ -127,4 +127,15 @@ After we have properly found the camera matrix and distortion coefficients, we c
 In addition, there are 2 videos for the project. One contains the bird eye view of the binary image of the lane with the estimated polynomial fit for the lane lines and the other is the final video with the estimated curvature and with the lane highlighted in green. This pair is usefull to debug and understand why sometimes the estimation for the lane lines doesn't work as well as they should.
 
 
+Discussion
+---- 
+This projected achieved its objective of identifying the lane lines and estimating the curvature of the lane. In the process, to achieve our objective, we knowlingly assumed some behaviours, which may not always be true: Such as
+1) The lane lines are always present. Its is common(more often in some countries, states and cities then others) that the streets don't have lines, they may be not clearly visible, or even have different colors. When estimating the lane lines, we used a defined window where the algorithm searched for the lines, but if they are not present(or they are not identifiable) the algortihm won't work at all.
+2) The lanes don't have acute curves. Again, when finding the position of the lane lkines through windows, we defined a maximum width for which the algorithm would try to find the lines. If there are acute(or even 90 degrees) curves, the algorithm isn't 'fast' enough to follow the lines.
+
+In addition, there are some other issues that we need to be aware and may be source for future improvements:
+1) When using the camera and applying the perspective trasform, it becomes very clear how distorted the lines far from the camera become: they loose constrast, the distinguished white/yellow color and even the rectangular form(becoming more like parallelogramm). 
+2) The algorithm was only applied to a very good visibility situation. In occasion where there may be fog or rain, they visibility will be lost and the algorithm will very likely loose accuracy and may not identify the lane lines at all.
+
+
 # Advanced_Lane_Detection4
