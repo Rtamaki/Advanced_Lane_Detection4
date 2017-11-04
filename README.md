@@ -82,7 +82,7 @@ Now we need to check the quality of the camera calibration with the chessboard i
 ![][undist3]
 
 
-The Lane Detection Pipeline
+The Lane Detection Pipeline(pipeline3 and pipeline4)
 ----
 After we have properly found the camera matrix and distortion coefficients, we can go to the next step of finding the lane values, such as the curvature, the deviation from the center, and its position in the image. The process to get these values can be interpreted as a pipeline through which image has to go thorugh. The pipeline used was *pipeline2()* in the folue *pipeline.py*, which calls for several functions in the files *image_processing.py*, *lane_detection_py* and *curavture_estimatio.py*.
 
