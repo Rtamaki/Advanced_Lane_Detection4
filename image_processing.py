@@ -165,6 +165,52 @@ def compound_thresh(img, sobel_kernel=3, abs_sobel_thresh=(20,100), s_thresh=(12
     return binary
 
 
+def select_yellow(image):
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    lower = np.array([15,60,60])
+    upper = np.array([30,174, 250])
+    mask = cv2.inRange(hsv, lower, upper)
+    return mask
+
+def select_white(image):
+    lower = np.array([202,202,202])
+    upper = np.array([255,255,255])
+    mask = cv2.inRange(image, lower, upper)
+
+    return mask
+
+def comb_thresh(image):
+    yellow = select_yellow(image)
+    white = select_white(image)
+
+    combined_binary = np.zeros_like(yellow)
+    combined_binary[(yellow >= 1) | (white >= 1)] = 1
+
+    return combined_binary
+
+
+def select_yellow2(image):
+    hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+    lower = np.array([15,60,60])
+    upper = np.array([30,174, 250])
+    mask = cv2.inRange(hsv, lower, upper)
+    return mask
+
+def select_white(image):
+    lower = np.array([202,202,202])
+    upper = np.array([255,255,255])
+    mask = cv2.inRange(image, lower, upper)
+
+    return mask
+
+def comb_thresh_for_video(image):
+    yellow = select_yellow2(image)
+    white = select_white(image)
+
+    combined_binary = np.zeros_like(yellow)
+    combined_binary[(yellow >= 1) | (white >= 1)] = 1
+
+    return combined_binary
 
 
 
@@ -173,7 +219,7 @@ def crop_image(img, left_upper_corner, right_bottom_corner):
     return crop_img
 
 
-def annotate_img(img, string, position=(700,50), size=2, color=(0,0,0)):
+def annotate_img(img, string, position=(700,50), size=0.1, color=(0,0,0)):
     cv2.putText(img, string, position, cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, size,color)
 
 
@@ -182,30 +228,11 @@ def viz_lane_img(warped, img, left_fitx, right_fitx, ploty, Minv):
     # Create an image to draw the lines
     warp_zero = np.zeros_like(warped).astype(np.uint8)
     color_wrap = np.dstack((warp_zero, warp_zero, warp_zero))
-    #
-    # new_left_fitx = left_fitx[:int(left_fitx.size/1.5)]
-    # new_right_fitx = right_fitx[: int(right_fitx.size / 1.5)]
-    # new_ploty = ploty[:int(ploty.size / 1.5)]
-    #
-    # left_fitx = new_left_fitx
-    # right_fitx = new_right_fitx
-    # ploty = new_ploty
-
-    # new_left_fitx = left_fitx[int(left_fitx.size / 1.5):]
-    # new_right_fitx = right_fitx[ int(right_fitx.size / 1.5):]
-    # new_ploty = ploty[int(ploty.size / 1.5):]
-    #
-    # left_fitx = new_left_fitx
-    # right_fitx = new_right_fitx
-    # ploty = new_ploty
-
-
 
     # Recast the x and y into usable formats for cv2.fillPoly()
     pts_left = np.array([np.transpose(np.vstack([left_fitx, ploty]))])
     pts_right = np.array([np.flipud(np.transpose(np.vstack([right_fitx, ploty])))])
     pts = np.hstack((pts_left, pts_right))
-
     # Draw the lanes onto the warped image
     cv2.fillPoly(color_wrap, np.int_([pts]), (0, 255, 0))
 

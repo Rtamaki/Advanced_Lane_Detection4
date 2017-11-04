@@ -82,17 +82,17 @@ Now we need to check the quality of the camera calibration with the chessboard i
 ![][undist3]
 
 
-The Lane Detection Pipeline(pipeline3 and pipeline4)
+The Lane Detection Pipeline
 ----
 After we have properly found the camera matrix and distortion coefficients, we can go to the next step of finding the lane values, such as the curvature, the deviation from the center, and its position in the image. The process to get these values can be interpreted as a pipeline through which image has to go thorugh. The pipeline used was *pipeline2()* in the folue *pipeline.py*, which calls for several functions in the files *image_processing.py*, *lane_detection_py* and *curavture_estimatio.py*.
 
   1) Load the camera matrix and distortion coefficients
   2) Undistort the image (*image_processing.undistort_image()*)
-  3) Apply a combination of brightness, gradient direction, gradient value, hue thresholds to get a binary image in which the lane lines are as visible as possible(since some loss is acceptable, but they must yet be detectable) and everything else(or at least everything which are near the lane lines in the image), are black. (*image_processing.compound_thresh()*). After more iterations and from help from Udacity, I implemented the lane detection only using the colors, by accepting either white or yellow and got much better accuracy. I left the first implentation for reference for anyone who may in the future improve from here.
-    3.1.1) Transform the image from RGB to HLS color space. This color space is more easily interpretd by use since one dimension is only the "color"(hue), the second is the saturation and the last is the brightness value. So with this color space we already have all the interested dimensions for the algorithm.
-    3.1.2) Apply sobel through "cv2.Sobel" in each axis to get the gradient in each direction, then get the absolute values of the gradient and it's direction. Apply value restriction to both values.
-    3.1.3) Apply value resctricton  in the hue and satuaration dimensions.
-    3.1.4 Combine the the previous binary images through *or* and *and* logic the get the lane lines while excluding everything else as best as possible.
+  3) Apply a combination of brightness, gradient direction, gradient value, hue thresholds to get a binary image in which the lane lines are as visible as possible(since some loss is acceptable, but they must yet be detectable) and everything else(or at least everything which are near the lane lines in the image), are black. (*image_processing.compound_thresh()*)
+    3.1) Transform the image from RGB to HLS color space. This color space is more easily interpretd by use since one dimension is only the "color"(hue), the second is the saturation and the last is the brightness value. So with this color space we already have all the interested dimensions for the algorithm.
+    3.2) Apply sobel through "cv2.Sobel" in each axis to get the gradient in each direction, then get the absolute values of the gradient and it's direction. Apply value restriction to both values.
+    3.3) Apply value resctricton  in the hue and satuaration dimensions.
+    3.4 Combine the the previous binary images through *or* and *and* logic the get the lane lines while excluding everything else as best as possible.
     ![Straight Lines 1 Binary][bin1]
     ![Straight Lines 1 Binary][bin2]
     ![Binary Test 1][bin3]
@@ -101,11 +101,8 @@ After we have properly found the camera matrix and distortion coefficients, we c
     ![Binary Test 4][bin6]
     ![Binary Test 5][bin7]
     ![Binary Test 6][bin8]
-   3.2.1) Transform the image from RGB to HSV color space
-   3.2.2) For one binary, select only the yellow points. In the HSV format, it is more or less between [15, 60, 60] and [30, 174, 250], depending on why kind of yellow you want. 
-   3.2.3) Using either RGB/BGR/HSV, select the white points in the image. This may have future problems if we try to implement to agorithm to work in the night.
-   3.3.4) Select all points that satisfy either conditions.
-   
+
+    
   4) From the previous combined binary image, apply perspective transform. (*image_processing.do_perspective_transform()*)
     4.1) To get the correct transformation, we need to use the images *straight_lines1.jpg* and *straight_lines2.jpg* to get the 4 points in the lane which we know define a rectangular form. Afterwards, we need to specify which format these points if they were seen in bird eye view, and we pass the 2 pairs of 4 points to the function "cv2.getPerspectiveTranform" to get the matrix to warp the perspective. 
     4.2) In fact, it is bette to get the perspective transform matrix before, so the pipeline has 1 less step to go through for each image.
@@ -129,22 +126,5 @@ After we have properly found the camera matrix and distortion coefficients, we c
 
 In addition, there are 2 videos for the project. One contains the bird eye view of the binary image of the lane with the estimated polynomial fit for the lane lines and the other is the final video with the estimated curvature and with the lane highlighted in green. This pair is usefull to debug and understand why sometimes the estimation for the lane lines doesn't work as well as they should.
 
-
-Discussion
----- 
-This projected achieved its objective of identifying the lane lines and estimating the curvature of the lane. In the process, to achieve our objective, we knowlingly assumed some behaviours, which may not always be true: Such as
-1) The lane lines are always present. Its is common(more often in some countries, states and cities then others) that the streets don't have lines, they may be not clearly visible, or even have different colors. When estimating the lane lines, we used a defined window where the algorithm searched for the lines, but if they are not present(or they are not identifiable) the algortihm won't work at all.
-2) The lanes don't have acute curves. Again, when finding the position of the lane lkines through windows, we defined a maximum width for which the algorithm would try to find the lines. If there are acute(or even 90 degrees) curves, the algorithm isn't 'fast' enough to follow the lines.
-
-In addition, there are some other issues that we need to be aware and may be source for future improvements:
-1) When using the camera and applying the perspective trasform, it becomes very clear how distorted the lines far from the camera become: they loose constrast, the distinguished white/yellow color and even the rectangular form(becoming more like parallelogramm). 
-2) The algorithm was only applied to a very good visibility situation. In occasion where there may be fog or rain, they visibility will be lost and the algorithm will very likely loose accuracy and may not identify the lane lines at all.
-
-Observations
-----
-Here I would like to comment some of the issues I have faced in this project that someone else may encounter in the future
-1) When using cv2.imread() the original color space is BGR and when using moviepy it reads the images in color space RGB
-2) For lane lines identification, it is better to use the color instead of gradients. I tested with several combinations, but only taking in account if its is either white or yellow was the best
-3) When using perspective transform, be careful to gurantee that the bottom of the original image is also in the bottom of the trnasformed imaged. Otherwise, one half will be 'upside-down'.
 
 # Advanced_Lane_Detection4

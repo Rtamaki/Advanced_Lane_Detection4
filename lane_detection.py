@@ -157,13 +157,6 @@ Method 2: get the indices of where the lines satisfy the minimum amount of white
 
 
 
-
-
-
-
-
-
-
 def find_polyfit(binary_warped,
                  nwindows=9,  # Set the number of segmentation in the y dimension
                  margin=100,  # Set the width of the windows +/- margin
@@ -355,14 +348,23 @@ def get_estimated_lane_points(binary_warped, left_fit, right_fit):
     return ploty, left_fitx, right_fitx
 
 
+def get_deviation_from_center(leftx, rightx, ploty, Minv, original_img, xm_per_pix=3.7/320):
+    i = 1000
+    lx = leftx[i]
+    rx = rightx[i]
+    y = ploty[i]
+
+    transf_left = get_warped_coord([lx, y], Minv)
+    transf_right = get_warped_coord([rx, y], Minv)
+
+    diff = (original_img.shape[1] / 2 - (transf_left[0] + transf_right[0]) / 2) * xm_per_pix
+    return transf_left, transf_right, diff
 
 
-
-
-
-
-
-
+def get_warped_coord(point, M):
+    x_dist = (M[0,0]*point[0] + M[0,1]* point[1] + M[0,2])/ (M[2,0]*point[0] + M[2,1]*point[1] + M[2,2])
+    y_dist = (M[1,0]*point[0] + M[1,1]* point[1] + M[1,2])/ (M[2,0]*point[0] + M[2,1]*point[1] + M[2,2])
+    return (int(x_dist), int(y_dist))
 
 
 

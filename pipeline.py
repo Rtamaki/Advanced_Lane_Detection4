@@ -76,7 +76,91 @@ def pipeline2(img, M, Minv):
     return drawed_lane_img
 
 
+# lane points identification, and curvature estimation
+def pipeline3(img, M, Minv):
 
+    # Undistort image
+    undist = image_processing.undistort_image(img)
+
+    # Apply threshold
+    binary = image_processing.comb_thresh(undist).astype(np.uint8)
+    # Apply perspective transformation
+    binary_warped = image_processing.do_perspective_transform(binary, M)
+
+    # Get lane information
+    ret, left_fit, right_fit, leftx, lefty, rightx, righty, nonzerox, nonzeroy, out_img, result = \
+        lane_detection.find_polyfit(binary_warped, nwindows=6, margin=80, minpix=50, min_points=50, viz=True)
+
+    # Get estimated lane points from polnomial fit
+    ploty, left_fitx, right_fitx = lane_detection.get_estimated_lane_points(binary_warped, left_fit, right_fit)
+
+
+    image_processing.test_polinomial_fit(out_img, ploty, left_fit)
+    image_processing.test_polinomial_fit(out_img, ploty, right_fit)
+
+
+    # Estimate curvatures from left and right lanes
+    left_curvature, right_curvature = \
+        curvature_estimatio.calculate_curvatures(leftx, lefty, rightx, righty, ym_per_pix=30.0/780, xm_per_pix=3.7/320)
+
+
+
+    # Process undistorted image to visualize where the algorithm think the lane lines are
+    drawed_lane_img = \
+        image_processing.viz_lane_img(binary_warped, undist, left_fitx, right_fitx, ploty, Minv)
+
+    # Get Deviation from the lane center
+    transf_left, transf_right, diff = lane_detection.get_deviation_from_center(leftx, rightx, ploty, Minv, undist,
+                                                                               xm_per_pix=3.7 / 320)
+
+    # Comment on the upper right position of the image the estimated curvature of the lane
+    image_processing.annotate_img(drawed_lane_img, 'Curv: ' + str(right_curvature * 0.5 + left_curvature * 0.5) + 'Dev: diff' + str(diff), position=(700,50), size=1, color=(0,0,0))
+
+    return drawed_lane_img
+
+
+
+# lane points identification, and curvature estimation
+def pipeline4(img, M, Minv):
+
+    # Undistort image
+    undist = image_processing.undistort_image(img)
+
+    # Apply threshold
+    binary = image_processing.comb_thresh_for_video(undist).astype(np.uint8)
+    # Apply perspective transformation
+    binary_warped = image_processing.do_perspective_transform(binary, M)
+
+    # Get lane information
+    ret, left_fit, right_fit, leftx, lefty, rightx, righty, nonzerox, nonzeroy, out_img, result = \
+        lane_detection.find_polyfit(binary_warped, nwindows=6, margin=80, minpix=50, min_points=50, viz=True)
+
+    # Get estimated lane points from polnomial fit
+    ploty, left_fitx, right_fitx = lane_detection.get_estimated_lane_points(binary_warped, left_fit, right_fit)
+
+
+    image_processing.test_polinomial_fit(out_img, ploty, left_fit)
+    image_processing.test_polinomial_fit(out_img, ploty, right_fit)
+
+
+    # Estimate curvatures from left and right lanes
+    left_curvature, right_curvature = \
+        curvature_estimatio.calculate_curvatures(leftx, lefty, rightx, righty, ym_per_pix=30.0/780, xm_per_pix=3.7/320)
+
+
+
+    # Process undistorted image to visualize where the algorithm think the lane lines are
+    drawed_lane_img = \
+        image_processing.viz_lane_img(binary_warped, undist, left_fitx, right_fitx, ploty, Minv)
+
+    # Get Deviation from the lane center
+    transf_left, transf_right, diff = lane_detection.get_deviation_from_center(leftx, rightx, ploty, Minv, undist,
+                                                                               xm_per_pix=3.7 / 320)
+
+    # Comment on the upper right position of the image the estimated curvature of the lane
+    image_processing.annotate_img(drawed_lane_img, 'Curv: ' + str(right_curvature * 0.5 + left_curvature * 0.5) + 'Dev: diff' + str(diff), position=(700,50), size=1, color=(0,0,0))
+
+    return drawed_lane_img
 
 
 def video_pipeline(img):
@@ -88,7 +172,7 @@ def video_pipeline(img):
             src_corners=np.float32([[600, 450], [995, 650], [325, 650], [685, 450]]),
             dist_corners=np.float32([[offset, offset], [width, height], [offset, height], [width, offset]]))
 
-    result = pipeline2(img, M, Minv)
+    result = pipeline4(img, M, Minv)
     return result
 
 #
@@ -106,3 +190,4 @@ def video_pipeline(img):
 # warped = pipeline2(img, M, Minv)
 # cv2.imshow("x", warped)
 # cv2.waitKey(5000)
+

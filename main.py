@@ -1,12 +1,12 @@
 import numpy as np
 import cv2
+
 import camera_calibration
 import image_processing
 import lane_detection
 import curvature_estimatio
 import time
 import pipeline
-from moviepy.video import VideoClip
 import matplotlib.pyplot as plt
 
 
@@ -28,17 +28,11 @@ M, Minv = \
         src_corners=np.float32([[600, 450], [995, 650], [325, 650], [685, 450]]),
         dist_corners=np.float32([[offset, offset], [width, height], [offset, height], [width, offset]]))
 
-image = 'calibration15.jpg'
-img = cv2.imread("./camera_cal/"+image)
-# warped2 = pipeline.pipeline2(img, M, Minv)
-warped2 = image_processing.undistort_image(img)
-cv2.imwrite("./undist_"+image,warped2)
+image = 'straight_lines1.jpg'
+img = cv2.imread("./test_images/"+image)
+warped2 = pipeline.pipeline3(img, M, Minv)
 
 
-
-
-
-
-# cv2.imshow("x", warped)
+# cv2.imshow("x", img)
 cv2.imshow("z", warped2)
 cv2.waitKey(5000)

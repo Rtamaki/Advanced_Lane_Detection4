@@ -8,8 +8,8 @@ import lane_detection
 
 def get_lanes_fits(leftx, lefty, rightx, righty, ym_per_pix = 30.0 / 720.0 , xm_per_pix = 3.7 / 700.0):
 
-    left_fit = np.polyfit(lefty/ym_per_pix, leftx/xm_per_pix, 2)
-    right_fit = np.polyfit(righty/ym_per_pix, rightx/xm_per_pix, 2)
+    left_fit = np.polyfit(lefty*ym_per_pix, leftx*xm_per_pix, 2)
+    right_fit = np.polyfit(righty*ym_per_pix, rightx*xm_per_pix, 2)
     return left_fit, right_fit
 
 
