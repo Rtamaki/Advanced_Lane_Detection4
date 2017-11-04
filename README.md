@@ -137,5 +137,11 @@ In addition, there are some other issues that we need to be aware and may be sou
 1) When using the camera and applying the perspective trasform, it becomes very clear how distorted the lines far from the camera become: they loose constrast, the distinguished white/yellow color and even the rectangular form(becoming more like parallelogramm). 
 2) The algorithm was only applied to a very good visibility situation. In occasion where there may be fog or rain, they visibility will be lost and the algorithm will very likely loose accuracy and may not identify the lane lines at all.
 
+Observations
+----
+Here I would like to comment some of the issues I have faced in this project that someone else may encounter in the future
+1) When using cv2.imread() the original color space is BGR and when using moviepy it reads the images in color space RGB
+2) For lane lines identification, it is better to use the color instead of gradients. I tested with several combinations, but only taking in account if its is either white or yellow was the best
+3) When using perspective transform, be careful to gurantee that the bottom of the original image is also in the bottom of the trnasformed imaged. Otherwise, one half will be 'upside-down'.
 
 # Advanced_Lane_Detection4
