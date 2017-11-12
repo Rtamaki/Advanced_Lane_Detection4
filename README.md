@@ -15,14 +15,14 @@
 [bin7]: ./binary_test5.jpg "Binary Test 5"
 [bin8]: ./binary_test6.jpg "Binary Test 6"
 
-[bin_warped1]: ./binary__warped_straight_lines1.jpg "Warped Straight Lines Binary 1"
-[bin_warped2]: ./binary__warped_straight_lines2.jpg "Warped Straight Lines Binary 2"
-[bin_warped3]: ./binary__warped_test1.jpg "Warped Binary Test 1"
-[bin_warped4]: ./binary__warped_test2.jpg "Warped Binary Test 2"
-[bin_warped5]: ./binary__warped_test3.jpg "Warped Binary Test 3"
-[bin_warped6]: ./binary__warped_test4.jpg "Warped Binary Test 4"
-[bin_warped7]: ./binary__warped_test5.jpg "Warped Binary Test 5"
-[bin_warped8]: ./binary__warped_test6.jpg "Warped Binary Test 6"
+[bin_warped1]: ./binary_warped_straight_lines1.jpg "Warped Straight Lines Binary 1"
+[bin_warped2]: ./binary_warped_straight_lines2.jpg "Warped Straight Lines Binary 2"
+[bin_warped3]: ./binary_warped_test1.jpg "Warped Binary Test 1"
+[bin_warped4]: ./binary_warped_test2.jpg "Warped Binary Test 2"
+[bin_warped5]: ./binary_warped_test3.jpg "Warped Binary Test 3"
+[bin_warped6]: ./binary_warped_test4.jpg "Warped Binary Test 4"
+[bin_warped7]: ./binary_warped_test5.jpg "Warped Binary Test 5"
+[bin_warped8]: ./binary_warped_test6.jpg "Warped Binary Test 6"
 
 [final_straight1]: ./final_straight_lines1.jpg "Warped Straight Lines Binary 1"
 [final_straight2]: ./final_straight_lines2.jpg "Warped Straight Lines Binary 2"
@@ -118,13 +118,31 @@ After we have properly found the camera matrix and distortion coefficients, we c
     ![][bin_warped5]  ![][bin_warped6] ![][bin_warped7] ![][bin_warped8]
     
   6) Estimate a second degree polynomial that fits as perfect as possible in the detected lane points (done together with step 5 in the previous function)
+    6.5) After estimating the second degree polynomials for both lane lines, we can use them in the next frame of the video to define the region where we look for white points, so we can skip step 5. In addition to increase in speed, what we are also more robust, since the values for the polynomials wont differ so strongly, since we are using the previous value to estimate the possible region for the lane lines.
+  
+  
   7) Estimate the lane curvature from the coeficients of this polynomial and a lane point in the image, preferably one close to the car.(*curvature_estimatio.calculate_curvature()*)
   8)  Project the estimated lane from the coeffiecients of the polynomial and apply inverse perspective transform to get the lane position in the original image. Combine the lane image and the original undistorted image with "cv2.addWeighted" (*image_processing.annotate_img()*)
     ![][final_straight1]  ![][final_straight2] ![][final_test1] ![][final_test2]
     ![][final_test3]  ![][final_test4] ![][final_test5] ![][final_test6]
+   
+    
+   
 
 
 In addition, there are 2 videos for the project. One contains the bird eye view of the binary image of the lane with the estimated polynomial fit for the lane lines and the other is the final video with the estimated curvature and with the lane highlighted in green. This pair is usefull to debug and understand why sometimes the estimation for the lane lines doesn't work as well as they should.
+
+Discussion
+----
+With the video to which the project was tested, we restricted the algorithm to a very restrict situation that may not(and probably doens't) occur always. In the video we had very good light coonditions: no rain, no colored street lights, and no fog. Since our algorithm uses fixed values for selecting the lanes( yellow and white), if during the video we encountered a situation in which the values for the lanes differ significantly, the algortihm won't be able to identify the lane lines. What we could do in such a situation is to use an adaptive thresholding method that adapts to local light values.
+In the situation we tested, the lane lines conditions were very satisfactory as well. Even though we had some difficulties regarding the times when the floor was gray, the lane lines were always present. There are situations when the lane lines are partially or compĺeted erased, and then there will be no way to estimate the lane position with the current algorithm
+At last, the training was restricted to curves with very large radius. Since our algorithm defines a fixed margin where we try to identify white points, if the curve happens to be to acute, the algorithm wont't be able to follow.
+
+
+
+
+
+
 
 
 # Advanced_Lane_Detection4
