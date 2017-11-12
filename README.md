@@ -123,7 +123,8 @@ After we have properly found the camera matrix and distortion coefficients, we c
 
 In addition, there are 2 videos for the project. One contains the bird eye view of the binary image of the lane with the estimated polynomial fit for the lane lines and the other is the final video with the estimated curvature and with the lane highlighted in green. This pair is usefull to debug and understand why sometimes the estimation for the lane lines doesn't work as well as they should.
 
-
+### Discussion
+----
 With the video to which the project was tested, we restricted the algorithm to a very restrict situation that may not(and probably doens't) occur always. In the video we had very good light coonditions: no rain, no colored street lights, and no fog. Since our algorithm uses fixed values for selecting the lanes( yellow and white), if during the video we encountered a situation in which the values for the lanes differ significantly, the algortihm won't be able to identify the lane lines. What we could do in such a situation is to use an adaptive thresholding method that adapts to local light values. 
 I
 n the situation we tested, the lane lines conditions were very satisfactory as well. Even though we had some difficulties regarding the times when the floor was gray, the lane lines were always present. There are situations when the lane lines are partially or compĺeted erased, and then there will be no way to estimate the lane position with the current algorithm.
