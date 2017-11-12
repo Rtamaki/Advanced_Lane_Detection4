@@ -115,6 +115,7 @@ After we have properly found the camera matrix and distortion coefficients, we c
     ![][bin_warped5]  ![][bin_warped6] ![][bin_warped7] ![][bin_warped8]
     
   6) Estimate a second degree polynomial that fits as perfect as possible in the detected lane points (done together with step 5 in the previous function)
+    6.5) For the video pipeline, as we know the the lane lines don't change position drastically, we can use(and we do use) the previous estimation to restrict the region in which we look for white points  in the warped binary image. With this, we win not only in speed, but we also have an algorithm more robust to disturbances.
   7) Estimate the lane curvature from the coeficients of this polynomial and a lane point in the image, preferably one close to the car.(*curvature_estimatio.calculate_curvature()*)
   8)  Project the estimated lane from the coeffiecients of the polynomial and apply inverse perspective transform to get the lane position in the original image. Combine the lane image and the original undistorted image with "cv2.addWeighted" (*image_processing.annotate_img()*)
     ![][final_straight1]  ![][final_straight2] ![][final_test1] ![][final_test2]
