@@ -1,3 +1,4 @@
+
 ## Advanced Lane Finding
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
@@ -35,7 +36,7 @@
 
 
 
-The Project
+### The Project
 ---
 
 The goals / steps of this project are the following:
@@ -57,15 +58,11 @@ The `challenge_video.mp4` video is an extra (and optional) challenge for you if 
 
 If you're feeling ambitious (again, totally optional though), don't stop there!  We encourage you to go out and take video of your own, calibrate your camera and show us how you would implement this project from scratch!
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
-
 The Steps
 ----
 To accomplish the objective of this project, we can devide all the process in 2 separable parts: the first is the camera calibration through the images in the folder cam_calibration and the second it the pipeline to get the lane curvature and its position in the image. 
 
-The Camera Calibration
+#### The Camera Calibration
 ----
 The camera calibration is the most essential process when working with images, since every camera imposes some kind of distortion which we need to correct to have usefull measurements, and also to estimate the real measurements with the camera matrix (which won't be done in here, but is needed when one work with fiducial markers such as ArUco Markers). To estimate the camera's parameters (distortion coefficients and camera matrix) we use the OpenCV module, more specificaly, the function "cv2.findChessboardCorners()" and "cv2.calibrateCamera()". All the code for camera calibration is located in the fle *camera_calibration.py* in function *calibrateCamera()*.
 
@@ -82,7 +79,7 @@ Now we need to check the quality of the camera calibration with the chessboard i
 ![][undist3]
 
 
-The Lane Detection Pipeline
+#### The Lane Detection Pipeline
 ----
 After we have properly found the camera matrix and distortion coefficients, we can go to the next step of finding the lane values, such as the curvature, the deviation from the center, and its position in the image. The process to get these values can be interpreted as a pipeline through which image has to go thorugh. The pipeline used was *pipeline2()* in the folue *pipeline.py*, which calls for several functions in the files *image_processing.py*, *lane_detection_py* and *curavture_estimatio.py*.
 
@@ -127,4 +124,3 @@ After we have properly found the camera matrix and distortion coefficients, we c
 In addition, there are 2 videos for the project. One contains the bird eye view of the binary image of the lane with the estimated polynomial fit for the lane lines and the other is the final video with the estimated curvature and with the lane highlighted in green. This pair is usefull to debug and understand why sometimes the estimation for the lane lines doesn't work as well as they should.
 
 
-# Advanced_Lane_Detection4
