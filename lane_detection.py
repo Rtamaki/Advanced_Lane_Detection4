@@ -176,15 +176,6 @@ def find_polyfit(binary_warped,
     leftx_base = np.argmax(histogram[:midpoint])
     rightx_base = np.argmax(histogram[midpoint:]) + midpoint
 
-    # # If not enough number of points are detected, then the initial base will be wrong and
-    # # we may get totaly wrong estimation, therefore, if not enough points are detected,
-    # # we set the base to be in the middle of each half
-    # if np.max(histogram[:midpoint]) <= 250:
-    #     leftx_base = np.int(binary_warped.shape[1] / 4)
-    #
-    # if np.max (histogram[midpoint:]) <= 250:
-    #     rightx_base = np.int(3 * binary_warped.shape[1] / 4) + 200
-
     # Set height of the windows
     window_height = np.int(binary_warped.shape[0]/nwindows)
 
@@ -297,11 +288,15 @@ def update_lane_fit(binary_warped, left_fit, right_fit, margin=100):
     rightx = nonzerox[right_lane_inds]
     righty = nonzeroy[right_lane_inds]
 
-    # Fit a new polynomial
-    left_fit = np.polyfit(lefty, leftx, 2)
-    right_fit = np.polyfit(righty, rightx, 2)
 
-    return left_fit, right_fit, leftx, lefty, rightx, righty
+    # Fit a new polynomial
+    new_left_fit = np.polyfit(lefty, leftx, 2)
+    new_right_fit = np.polyfit(righty, rightx, 2)
+
+    # new_left_fit = (new_left_fit + left_fit) / 2
+    # new_right_fit = (new_right_fit + right_fit) / 2
+
+    return new_left_fit, new_right_fit, leftx, lefty, rightx, righty, True
 
 
 
@@ -348,25 +343,34 @@ def get_estimated_lane_points(binary_warped, left_fit, right_fit):
     return ploty, left_fitx, right_fitx
 
 
-def get_deviation_from_center(leftx, rightx, ploty, Minv, original_img, xm_per_pix=3.7/320):
+# def get_deviation_from_center(leftx, rightx, ploty, Minv, original_img, xm_per_pix=3.7/320):
+#     i = 1000
+#     lx = leftx[i]
+#     rx = rightx[i]
+#     y = ploty[i]
+#
+#     transf_left = get_warped_coord([lx, y], Minv)
+#     transf_right = get_warped_coord([rx, y], Minv)
+#
+#     diff = (original_img.shape[1] / 2 - (transf_left[0] + transf_right[0]) / 2) * xm_per_pix
+#     return transf_left, transf_right, diff
+#
+#
+# def get_warped_coord(point, M):
+#     x_dist = (M[0,0]*point[0] + M[0,1]* point[1] + M[0,2])/ (M[2,0]*point[0] + M[2,1]*point[1] + M[2,2])
+#     y_dist = (M[1,0]*point[0] + M[1,1]* point[1] + M[1,2])/ (M[2,0]*point[0] + M[2,1]*point[1] + M[2,2])
+#     return (int(x_dist), int(y_dist))
+#
+
+
+def get_deviation_from_center(leftx, rightx, ploty, Minv, warped_img, xm_per_pix=3.7/310):
     i = 1000
     lx = leftx[i]
     rx = rightx[i]
     y = ploty[i]
+    diff = (warped_img.shape[1] / 2 - (lx + rx) / 2) * xm_per_pix
 
-    transf_left = get_warped_coord([lx, y], Minv)
-    transf_right = get_warped_coord([rx, y], Minv)
-
-    diff = (original_img.shape[1] / 2 - (transf_left[0] + transf_right[0]) / 2) * xm_per_pix
-    return transf_left, transf_right, diff
-
-
-def get_warped_coord(point, M):
-    x_dist = (M[0,0]*point[0] + M[0,1]* point[1] + M[0,2])/ (M[2,0]*point[0] + M[2,1]*point[1] + M[2,2])
-    y_dist = (M[1,0]*point[0] + M[1,1]* point[1] + M[1,2])/ (M[2,0]*point[0] + M[2,1]*point[1] + M[2,2])
-    return (int(x_dist), int(y_dist))
-
-
+    return lx, rx, diff
 
 
 

@@ -11,8 +11,8 @@ imageio.plugins.ffmpeg.download()
 from moviepy.editor import VideoFileClip
 
 
-input_video_name = 'challenge_video.mp4'
-output_video_name = 'challenge_output.mp4'
+input_video_name = 'project_video.mp4'
+output_video_name = 'output.mp4'
 def process_video(input_video_name, output_video_name):
     print(output_video_name)
     # input_video = VideoClip(input_video_name)

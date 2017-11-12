@@ -167,13 +167,13 @@ def compound_thresh(img, sobel_kernel=3, abs_sobel_thresh=(20,100), s_thresh=(12
 
 def select_yellow(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    lower = np.array([15,60,60])
+    lower = np.array([15,60, 60])
     upper = np.array([30,174, 250])
     mask = cv2.inRange(hsv, lower, upper)
     return mask
 
 def select_white(image):
-    lower = np.array([202,202,202])
+    lower = np.array([222,202,202])
     upper = np.array([255,255,255])
     mask = cv2.inRange(image, lower, upper)
 
@@ -191,7 +191,7 @@ def comb_thresh(image):
 
 def select_yellow2(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-    lower = np.array([15,60,60])
+    lower = np.array([10,60,60])
     upper = np.array([30,174, 250])
     mask = cv2.inRange(hsv, lower, upper)
     return mask
@@ -219,8 +219,10 @@ def crop_image(img, left_upper_corner, right_bottom_corner):
     return crop_img
 
 
-def annotate_img(img, string, position=(700,50), size=0.1, color=(0,0,0)):
-    cv2.putText(img, string, position, cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, size,color)
+def annotate_img(img, string1, string2, position=(700,50), size=0.1, color=(0,0,0)):
+    cv2.putText(img, string1, position, cv2.FONT_HERSHEY_PLAIN, size,color)
+    position2 = (position[0], position[1] + 50)
+    cv2.putText(img, string2, position2, cv2.FONT_HERSHEY_PLAIN, size, color)
 
 
 def viz_lane_img(warped, img, left_fitx, right_fitx, ploty, Minv):
