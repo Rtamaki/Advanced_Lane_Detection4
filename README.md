@@ -34,7 +34,6 @@
 [final_test6]: ./final_test6.jpg "Warped Binary Test 6"
 
 
-
 The Project
 ---
 
